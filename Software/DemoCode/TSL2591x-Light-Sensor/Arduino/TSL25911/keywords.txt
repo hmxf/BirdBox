@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map TSL2591
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+DEBUG	KEYWORD1
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+TSL2591_Read_Lux	KEYWORD2	
+TSL2591_SET_LuxInterrupt	KEYWORD2
+SDCard_ReadBMP	KEYWORD2
+TSL2591_Init	KEYWORD2
+
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+IMAGE_DATA	LITERAL1
+
