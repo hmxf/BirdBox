@@ -90,7 +90,7 @@
 
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
-    sudo apt update && sudo apt install tree htop git screen tmox net-tools curl wget nano 
+    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano 
     sudo apt install i2c-tools
     ```
 
@@ -132,7 +132,7 @@
     [all]
     #dtoverlay=vc4-fkms-v3d
     ```
-    
+
 - 修改完毕后保存并退出。
 
 - 编辑 cmdline.txt 文件，找到 rootwait 并在后面插入内容使其成为如下所示的效果：
