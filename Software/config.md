@@ -1,32 +1,22 @@
 # Configuration
 
-## 1.Python Configuration
-
-### Delete python2.7
+## 1.Golang Configuration
 
 ```bash
-sudo apt autoremove python2.7 -y
+sudo apt-get install openssl
+sudo apt-get install libssl-dev
+wget https://studygolang.com/dl/golang/go1.14.3.linux-armv6l.tar.gz
+sudo tar -C /usr/local -xzf go1.14.3.linux-armv6l.tar.gz 
 ```
 
-### set python3.7 to default
+open .bshrc, write env info to the bottom.
 
-```bash
-sudo ln -s /usr/bin/python3.7 /usr/bin/python
-sudo ln -s /usr/bin/pip3 /usr/bin/pip
+```
+export PATH=$PATH:/usr/local/go/bin
+export GO111MODULE=on
+export GOPROXY=https://goproxy.io
 ```
 
-## 2.Database Configuration
+then,use "source .bashrc" to configure it.
 
-### install mysql
 
-```bash
-sudo apt install mariadb-server
-```
-
-### boot
-
-```bash
-systemctl enable mariadb
-```
-
-You need to type passward here.
