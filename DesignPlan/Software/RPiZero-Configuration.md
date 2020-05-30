@@ -1,6 +1,6 @@
 ## 系统配置方法
 
-### 树莓派 Zero W 系统配置方法（未验证）
+### 树莓派 Zero W 系统配置方法
 
 - 烧写镜像完成后打开 boot 分区，编辑 config.txt 文件，在文件末尾加上以下内容：
 
@@ -36,13 +36,15 @@
 
 - 安全弹出内存卡。
 
-- 开机启动后在弹出的初始设置界面正常设置，询问是否更新时选择跳过；询问是否重启时选择稍后。
+- 连接好键盘鼠标，稍后配置 WiFi 信息。
+
+- 开机启动后在弹出的初始设置界面正常设置，询问是否联网时连接 WiFi，询问是否更新时选择跳过，询问是否重启时选择稍后。
 
 - 从启动菜单选择 Preference -> Raspberry Pi Configuration 项。
 
-- 在 Display 标签页中启用 Overscan 并关闭 Pixel Doubling、Composite Video 和 Screen Blanking 选项。
+- 在 Display 标签页中启用 Overscan 并关闭 Pixel Doubling和 Screen Blanking 选项。
 
-- 在 Interfaces 标签页中打开全部接口，在 Performance 标签页中设置显存为256MB。
+- 在 Interfaces 标签页中打开全部接口，在 Performance 标签页中设置显存为 128MB。
 
 - 点击下方 Overlay File System 右侧的 Configure 按钮，在弹出的页面中为 Overlay 选项选择 Disable 并为 Boot Partition 选项选择 Read Write 选项。
 
@@ -67,7 +69,8 @@
 
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
-    sudo apt update && sudo apt install tree htop git screen tmox net-tools curl wget nano 
+    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano
+    sudo apt install i2c-tools
     ```
 
 - 执行以下命令安装电阻屏触摸驱动：
@@ -78,4 +81,17 @@
     sudo ./LCD7-1024x600-show
     ```
 
+- 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
+
+    ```
+    wget https://project-downloads.drogon.net/wiringpi-latest.deb && chmod +x wiringpi-latest.deb
+    sudo dpkg -i wiringpi-latest.deb
+    ```
+
 - 安装完成后重启系统
+
+- 执行以下命令确认所需要的软件及其版本：
+
+    ```
+    which python && python -V && which python3 && python3 -V && gpio -v && gpio readall && i2cdetect -y 1
+    ```
