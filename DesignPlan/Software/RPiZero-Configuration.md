@@ -73,6 +73,13 @@
     sudo apt install i2c-tools
     ```
 
+- 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
+
+    ```
+    wget https://project-downloads.drogon.net/wiringpi-latest.deb && chmod +x wiringpi-latest.deb
+    sudo dpkg -i wiringpi-latest.deb
+    ```
+
 - 执行以下命令安装电阻屏触摸驱动：
 
     ```
@@ -81,14 +88,7 @@
     sudo ./LCD7-1024x600-show
     ```
 
-- 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
-
-    ```
-    wget https://project-downloads.drogon.net/wiringpi-latest.deb && chmod +x wiringpi-latest.deb
-    sudo dpkg -i wiringpi-latest.deb
-    ```
-
-- 安装完成后重启系统
+- 触摸屏驱动安装完成后会自动重启系统。
 
 - 执行以下命令确认所需要的软件及其版本：
 
