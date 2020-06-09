@@ -71,10 +71,73 @@
     sudo dpkg -i wiringpi-latest.deb
     ```
 
-- 安装完成后重启系统
-
-- 执行以下命令确认所需要的软件及其版本：
+- 将以下代码粘贴到 /boot/config.txt 中并保存：
 
     ```
-    which python && python -V && which python3 && python3 -V && gpio -v && gpio readall && i2cdetect -y 1
+    dtoverlay=i2c-rtc,ds3231
     ```
+
+- 编辑 /lib/udev/hwclock-set 文件，注释掉以下内容（通常位于文件最开始的几行）：
+
+    ```
+    if [ -e /run/systemd/system ] ; then
+    exit 0
+    fi
+    ```
+
+    使其变为
+
+    ```
+    #if [ -e /run/systemd/system ] ; then
+    # exit 0
+    #fi
+    ```
+
+- 将以下内容写入 /etc/update-motd.d/10-uname 文件中（原有内容可以删除）：
+
+    ```
+    which python3
+    python3 -V
+    gpio -v
+    i2cdetect -y 1
+    ```
+
+- 将以下内容写入 /etc/rc.local 文件中（新加内容务必添加到 exit 0 之前）：
+
+    ```
+    hwclock -s
+    ```
+
+- 安装配置完成后重启系统
+
+- 现在应当可以在每次连接 SSH 的时候看到连接屏幕上输出相关信息。
+    
+    ```
+    这些信息包括 Python3 的安装位置和版本、树莓派硬件配置和版本信息以及 IIC 总线挂载的设备和它们的地址信息。其中地址 68 的位置上显示为 UU 是正常现象，这表明我们的 DS3231 RTC芯片已经被系统识别到，可以使用相关指令来对 RTC 时钟进行操作。
+    ```
+
+- 以下是操作 RTC 时钟的几个常用指令（需要使用 sudo 权限）：
+    
+    1. 读取 RTC 时钟并显示在终端
+
+        ```
+        hwclock -r
+        ```
+
+    2. 将系统时间写入 RTC 时钟（系统时间可以通过 NTP 服务从网络获取时间）
+
+        ```
+        hwclock -w
+        ```
+
+    3. 将 RTC 时间同步为系统时钟（通常这一步在系统启动时完成）
+
+        ```
+        hwclock -s
+        ```
+
+    4. 更多指令可以通过以下命令查询：
+    
+        ```
+        hwclock --help
+        ```
