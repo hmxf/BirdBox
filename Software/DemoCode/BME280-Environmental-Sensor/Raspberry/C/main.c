@@ -183,16 +183,13 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev)
 	rslt = bme280_set_sensor_settings(settings_sel, dev);
 	rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, dev);
 
-	// printf("Temperature           Pressure             Humidity\r\n");
-	// while (1) {
-	// 	/* Delay while the sensor completes a measurement */
-	// 	dev->delay_ms(10000);
-	// 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
-	// 	print_sensor_data(&comp_data);
-	// }
-  dev->delay_ms(100);
-  rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
-  print_sensor_data(&comp_data);
+	printf("Temperature           Pressure             Humidity\r\n");
+	while (1) {
+		/* Delay while the sensor completes a measurement */
+		dev->delay_ms(70);
+		rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
+		print_sensor_data(&comp_data);
+	}
 
 	return rslt;
 }

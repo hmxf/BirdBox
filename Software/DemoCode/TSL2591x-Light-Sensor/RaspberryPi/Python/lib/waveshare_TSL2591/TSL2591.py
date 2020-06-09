@@ -84,46 +84,37 @@ class TSL2591:
     def __init__(self, address=ADDR):
         self.i2c = smbus.SMBus(1)
         self.address = address
+        
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(INI_PIN, GPIO.IN)
+        
         self.ID = self.Read_Byte(ID_REGISTER)
-        if(self.ID != -1):
-            # print("ID = 0x%x"%self.ID)
-            # sys.exit()
-            self.Enable()
-            self.Set_Gain(MEDIUM_AGAIN)
-            self.Set_IntegralTime(ATIME_100MS)
-            self.Write_Byte(PERSIST_REGISTER, 0x01)
-            self.Disable()
-
-    # def Read_Byte(self, Addr):
-    #     Addr = (COMMAND_BIT | Addr) & 0xFF
-    #     return self.i2c.read_byte_data(self.address, Addr)
+        if(self.ID != 0x50):
+            print("ID = 0x%x"%self.ID)
+            sys.exit()
+        
+        self.Enable()
+        self.Set_Gain(MEDIUM_AGAIN)
+        self.Set_IntegralTime(ATIME_100MS)
+        self.Write_Byte(PERSIST_REGISTER, 0x01)
+        self.Disable()
 
     def Read_Byte(self, Addr):
         Addr = (COMMAND_BIT | Addr) & 0xFF
-        try:
-            x=self.i2c.read_byte_data(self.address, Addr)
-        except Exception:
-            print(666)
-            return -1
-        return x
-
+        return self.i2c.read_byte_data(self.address, Addr)
+        
     def Read_Word(self, Addr):
         Addr = (COMMAND_BIT | Addr) & 0xFF
         return self.i2c.read_word_data(self.address, Addr)
 
     def Write_Byte(self, Addr, val):
-        
         Addr = (COMMAND_BIT | Addr) & 0xFF
         self.i2c.write_byte_data(self.address, Addr, val & 0xFF)
 
     def Enable(self):
-
         self.Write_Byte(ENABLE_REGISTER,\
         ENABLE_AIEN | ENABLE_POWERON | ENABLE_AEN | ENABLE_NPIEN)
-
 
     def Disable(self):
         self.Write_Byte(ENABLE_REGISTER, ENABLE_POWEROFF)
