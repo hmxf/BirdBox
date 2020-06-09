@@ -2,12 +2,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame
+import json
 import sys
 
-from pygame.locals import *
+import pygame
 import requests
-import json
+from pygame.locals import *
 
 pygame.init()
 
@@ -20,12 +20,10 @@ BLUE = (0, 0, 255)
 
 
 # set up the window
-DISW,DISH=pygame.display.list_modes()[0]
+DISW, DISH = pygame.display.list_modes()[0]
 
-DISPLAYSURF = pygame.display.set_mode((DISW,DISH), FULLSCREEN, 32)
+DISPLAYSURF = pygame.display.set_mode((DISW, DISH), FULLSCREEN, 32)
 pygame.display.set_caption('Drawing')
-
-
 
 
 
@@ -39,13 +37,14 @@ pygame.draw.circle(DISPLAYSURF, GREEN, (7*DISW//10, DISH//2), DISH//5, 0)
 def touch(pos):
     x, y = pos
     url = 'http://localhost:8080/post_test'
-    data = {'username': 'mpp0130', 'pwd': 'Mp123456',
-            'cpwd': 'Mp123456', 'x': x, 'y': y}
+    data = {'username': 'raspiZero',  'x': x, 'y': y}
     req = requests.post(url, data)  # 发送post请求，第一个参数是URL，第二个参数是请求数据
+
 
 def terminate():
     pygame.quit()
     sys.exit()
+
 
 while True:  # main game loop
     for event in pygame.event.get():
@@ -60,3 +59,8 @@ while True:  # main game loop
 
 # spamRect = pygame.Rect(10,20,200,300)
 
+# TODO:
+'''
+1. 插入图片及其后续处理
+2. 
+'''
