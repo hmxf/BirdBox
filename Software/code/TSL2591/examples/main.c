@@ -33,8 +33,6 @@ int main(void)
     
 	//System Exit
 	DEV_ModuleExit();
-
-	return 0;
-	
+	return 0;	
 }
 
