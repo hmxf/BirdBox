@@ -60,7 +60,7 @@
 
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
-    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano 
+    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano p7zip-full
     sudo apt install i2c-tools rpi-eeprom-images
     ```
 
