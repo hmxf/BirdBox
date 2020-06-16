@@ -60,7 +60,7 @@
 
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
-    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano p7zip-full
+    sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano
     sudo apt install i2c-tools rpi-eeprom-images
     ```
 
@@ -105,6 +105,7 @@
 - 将以下内容写入 /etc/rc.local 文件中（新加内容务必添加到 exit 0 之前）：
 
     ```
+    pigpiod
     hwclock -s
     ```
 
