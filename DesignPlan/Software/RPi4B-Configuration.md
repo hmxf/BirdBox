@@ -106,6 +106,12 @@
 
     ```
     pigpiod
+    
+    python3 /home/pi/PWM_Control/pwm_control.py 23 100 FAN
+    python3 /home/pi/PWM_Control/pwm_control.py 25 100 FAN
+    python3 /home/pi/PWM_Control/pwm_control.py 12  25 LED
+    python3 /home/pi/PWM_Control/pwm_control.py 20   0 SERVO
+
     hwclock -s
     ```
 
