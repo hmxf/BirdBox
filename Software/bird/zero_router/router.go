@@ -71,7 +71,7 @@ func main() {
 		pid, err = os.StartProcess("./"+scriptName, []string{sleepTime}, procAttr)
 		// pid, err = os.StartProcess("/home/pi/router/text/base.py", []string{"3"}, procAttr)
 		fmt.Printf("Error %v starting process!", err) //
-		os.Exit(1)
+		fmt.Println(pid)
 
 	})
 	// })

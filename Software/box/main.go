@@ -79,7 +79,7 @@ func loop2(tempreture, pressure, humidity float64, light int) {
 
 	for i := num + 1; ; i++ {
 		go loop(tempreture, pressure, humidity, light, i)
-		time.Sleep(time.Second * 60)
+		time.Sleep(time.Second * 5)
 	}
 }
 func loop(tempreture, pressure, humidity float64, light, num int) {
