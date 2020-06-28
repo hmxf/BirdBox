@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <v-app id="inspire">
+      <v-app id="inspire">
+        <v-navigation-drawer v-model="drawer" app clipped>
+          <v-list dense>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title @click="open">open</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-cog</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title @click="close">close</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title ><a href="/state.csv"
+                  style="color: azure;text-decoration:none;">DownLoad box log</a></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title ><a href="/log.csv"
+                  style="color: azure;text-decoration:none;">DownLoad bird log</a></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+
+        <v-app-bar app clipped-left>
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>Application</v-toolbar-title>
+        </v-app-bar>
+
+        <v-main>
+          <v-container class="fill-height" fluid>
+            <v-row>
+              <v-col md='1'>
+                <div class="grid-content "></div>
+              </v-col>
+              <v-col md='8' justify="center"><img src=http://192.168.0.6:8881/ width=90% justify="center"></v-col>
+              <v-col>
+                <br><br>
+
+                <v-row>
+                  <v-col md='3'>
+                    <div class="grid-content "></div>
+                  </v-col>
+                  <v-col md="6">
+                    <div class="grid-content">
+                      <ul>
+                        <li>温度</li>
+                        <li>[[Tempreture]]℃</li>
+                      </ul>
+                      <ul>
+                        <li>湿度</li>
+                        <li>[[Humidity]]%</li>
+                      </ul>
+                      <ul>
+                        <li>气压</li>
+                        <li>[[Pressure]]kPa</li>
+                      </ul>
+                      <ul>
+                        <li>亮度</li>
+                        <li>[[Light]]Lux</li>
+                      </ul>
+                    </div>
+                  </v-col>
+                  <v-col md='3'>
+                    <div class="grid-content "></div>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+
+          </v-container>
+        </v-main>
+
+        <v-footer app>
+          <span>&copy; 2020</span>
+        </v-footer>
+      </v-app>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      props: {
+        source: String,
+      },
+      delimiters: ['[[', ']]'],
+
+      data: () => ({
+        drawer: null,
+        message: 'Hello Vue!',
+        basePath: '192.168.0.6:8080',
+        Tempreture: 0,
+        Pressure: 0,
+        Humidity: 0,
+        Light: 0,
+        Servo: 0
+      }),
+
+      created() {
+        this.$vuetify.theme.dark = true
+        this.getMessage()
+      },
+
+      mounted() {
+        this.timer()
+      },
+
+      destoryed() {
+        clearInterval(this.timer)
+      },
+      methods: {
+        open: function () {
+          axios.get('/display')
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        close: function () {
+          axios.get('/close')
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        getMessage: function () {
+          var that = this
+          axios.get('/message').then(function (response) {
+            console.log(response.data.Tempreture)
+            //取一位小数或取整
+            that.Tempreture = parseInt((response.data.Tempreture) * 10) / 10
+            that.Light = response.data.Light
+            that.Pressure = parseInt((response.data.Pressure) * 10) / 10
+            that.Servo = response.data.Servo
+            that.Humidity = parseInt(response.data.Humidity)
+          }).catch(function (error) {
+            console.log(error);
+          });
+        },
+        download: function (url) {
+          axios.get(url)
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        timer() {
+          return setInterval(() => {
+            this.getMessage()
+          }, 5000)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

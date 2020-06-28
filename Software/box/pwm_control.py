@@ -1,28 +1,52 @@
 #coding=utf-8
+import pigpio
 import time
-import RPi.GPIO as GPIO
 import sys
-
 command = sys.argv
-# for i in range(4):
-#     print(i,command[i])
 
-if command[1]=="setup":
-    GPIO.setup(command[2],GPIO.OUT)
-    p=GPIO.PWM(command[2],5000)
-    p.start[0]
-    p.ChangeDutyCycle(command[3])
-    time.sleep(1)
-elif command[1] == "stop":
-    GPIO.setup(command[2],GPIO.OUT)
-    p=GPIO.PWM(command[2],5000)
-    p.stop()
-    GPIO.cleanup()
+if command[1]=='-h':
+    print('''
+Example: python3 pwm_control.py [PIN] [DutyCycle] [Types]
+
+Types: LED,FAN,SERVO
+
+BCM Number:
+LED 12
+FAN1 23
+FAN2 25
+SERVO 20
+''')
+    sys.exit()
+pin = int(command[1])
+duty = int(command[2])
+types = command[3]
+if types == 'LED':
+    fc = 5000
+    if duty>80 or duty<25:
+        print("LED error!")
+        sys.exit()
+elif types =='FAN':
+    fc = 50
+    if duty>1000 or duty<0:
+        print("LED error!")
+        sys.exit()
 else:
-    print("command error!")
+    fc = 50
+    if duty>90 or duty<-90:
+        print("SERVO error")
+        sys.exit()
 
-# 参数设置：
-# 例：python3 pwm_control.py setup 32 20  
-# 前两个参数为启动命令，后三个分别是setup或stop、引脚号、空占比
-# 命令格式为： python3 pwm_control.py [setup/stop] [PIN] [DutyCycle]
+if types != 'SERVO':
+    pi = pigpio.pi()
+    pi.set_PWM_frequency(pin,5000)
+    pi.set_PWM_range(pin,1000)
+    pi.set_PWM_dutycycle(pin,duty)
+    time.sleep(0.5)
+else :
+    pi = pigpio.pi()
+    pi.set_servo_pulsewidth(pin,1500+duty/90*1000)
 
+
+# 命令格式为： python3 pwm_control.py [PIN] [DutyCycle] [types]
+# types: LED,FAN,SERVO
+# 1500+x/90*1000
