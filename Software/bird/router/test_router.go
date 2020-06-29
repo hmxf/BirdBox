@@ -38,10 +38,37 @@ func main() {
 		if err != nil {
 			fmt.Println("error:", err)
 		}
-		response, _ := client.Do(request)
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 		defer response.Body.Close()
 		fmt.Printf("response:%x\n", &response.Body)
 		c.JSON(response.StatusCode, response.Body)
+	})
+	r.GET("/list", func(c *gin.Context) {
+
+		client := &http.Client{}
+		// url := "http://192.168.0.155:8080/print"
+		url := config.PiZeroAddress + config.PiZeroPort + "/list"
+		request, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		defer response.Body.Close()
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		fmt.Println(string(body))
+		var a []FileMessage
+		json.Unmarshal(body, &a)
+		fmt.Println(a)
+		c.JSON(response.StatusCode, a)
 	})
 	r.GET("/display", func(c *gin.Context) {
 
@@ -53,7 +80,10 @@ func main() {
 		if err != nil {
 			fmt.Println("error:", err)
 		}
-		response, _ := client.Do(request)
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 		defer response.Body.Close()
 		fmt.Printf("response:%x\n", &response.Body)
 		c.JSON(response.StatusCode, response.Body)
@@ -67,7 +97,10 @@ func main() {
 		if err != nil {
 			fmt.Println("error:", err)
 		}
-		response, _ := client.Do(request)
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 		defer response.Body.Close()
 		fmt.Printf("response:%x\n", &response.Body)
 		c.JSON(response.StatusCode, response.Body)
@@ -84,14 +117,17 @@ func main() {
 	r.POST("/bird", index())
 	r.POST("/script", func(c *gin.Context) {
 
-		// url := "http://192.168.0.155:8080/display"
 		url := config.PiZeroAddress + config.PiZeroPort + "/script"
 		fmt.Println(url)
+
 		data := make(URL.Values)
-		fmt.Println(c.PostForm("script_name"))
+
 		scriptName := c.PostFormArray("script_name")
-		fmt.Println(scriptName)
+		sleepTime := c.PostFormArray("sleep_time")
+		fmt.Println("name:", scriptName)
+		fmt.Println("time:", sleepTime)
 		data["script_name"] = scriptName
+		data["sleep_time"] = sleepTime
 		res, err := http.PostForm(url, data)
 		fmt.Println(data)
 		if err != nil {
@@ -160,6 +196,7 @@ func getLine(fileName string) []string {
 	return row2
 }
 
+//Config 读取配置文件的结构体
 type Config struct {
 	PinLED         string `json:"pin_LED"`
 	PinFAN1        string `json:"pin_FAN1"`
@@ -194,4 +231,10 @@ func readConfig() Config {
 		return config
 	}
 	return config
+}
+
+//FileMessage 文件信息结构体
+type FileMessage struct {
+	Name string `json:"name"`
+	Time string `json:"time"`
 }

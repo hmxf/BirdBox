@@ -15,12 +15,34 @@
       <v-app id="inspire">
         <v-navigation-drawer v-model="drawer" app clipped>
           <v-list dense>
+            <v-col class="d-flex" cols="12" sm="6">
+            <select v-model="script_name" filled>
+              <option v-for="list in lists">
+                [[ list.name ]]
+              </option>
+            </select>
+          </v-col>
             <v-list-item link>
               <v-list-item-action>
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title @click="open">open</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-col class="d-flex" cols="12" sm="6">
+                <v-select
+                  :items="lists"
+                  filled
+                  label="Filled style"
+                ></v-select>
+              </v-col>
+              <v-list-item-content>
+                <v-list-item-title @click="openScript">open base.py</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
@@ -33,11 +55,10 @@
             </v-list-item>
             <v-list-item link>
               <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
+                <v-icon>mdi-cog</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title ><a href="/state.csv"
-                  style="color: azure;text-decoration:none;">DownLoad box log</a></v-list-item-title>
+                <v-list-item-title @click="list">list</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
@@ -45,8 +66,17 @@
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title ><a href="/log.csv"
-                  style="color: azure;text-decoration:none;">DownLoad bird log</a></v-list-item-title>
+                <v-list-item-title><a href="/state.csv" style="color: azure;text-decoration:none;">DownLoad box log</a>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title><a href="/log.csv" style="color: azure;text-decoration:none;">DownLoad bird log</a>
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -89,6 +119,10 @@
                         <li>亮度</li>
                         <li>[[Light]]Lux</li>
                       </ul>
+                      <ul>
+                        <li>[[ lists[0].name ]]</li>
+                        <li>[[ lists ]]</li>
+                      </ul>
                     </div>
                   </v-col>
                   <v-col md='3'>
@@ -127,16 +161,21 @@
         Pressure: 0,
         Humidity: 0,
         Light: 0,
-        Servo: 0
+        Servo: 0,
+        script_name: 'base.py',
+        sleep_time: 3,
+        lists: ["base1.py"]
       }),
 
       created() {
         this.$vuetify.theme.dark = true
         this.getMessage()
+        this.list()
       },
 
       mounted() {
         this.timer()
+
       },
 
       destoryed() {
@@ -152,10 +191,49 @@
               console.log(error);
             });
         },
+        openScript: function () {
+          var that = this
+          axios({
+            url: '/script',
+            method: 'post',
+            data: {
+              script_name: that.script_name,
+              sleep_time: that.sleep_time
+            },
+            // headers: {
+            //   'Content-type': 'application/x-www-form-urlencoded'
+            // },
+            transformRequest: [function (data) {
+              let ret = ''
+              for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }]
+          }).then(res => {
+            console.log(1234, res.data)
+          }).catch(error => {
+            console.log(error)
+          })
+        },
         close: function () {
           axios.get('/close')
             .then(function (response) {
               console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        list: function () {
+          var that = this;
+          axios.get('/list')
+            .then(function (response) {
+              console.log(response);
+              list_len = response.data.length
+              for (i = 0; i < list_len; i++) {
+                that.lists[i] = response.data[i].name
+              }
             })
             .catch(function (error) {
               console.log(error);
