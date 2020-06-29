@@ -16,7 +16,7 @@
         <v-navigation-drawer v-model="drawer" app clipped>
           <v-list dense>
             <v-col class="d-flex" cols="12" sm="6">
-            <select v-model="script_name" filled>
+            <select v-model="script_name" >
               <option v-for="list in lists">
                 [[ list.name ]]
               </option>
@@ -34,13 +34,6 @@
               <v-list-item-action>
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
-              <v-col class="d-flex" cols="12" sm="6">
-                <v-select
-                  :items="lists"
-                  filled
-                  label="Filled style"
-                ></v-select>
-              </v-col>
               <v-list-item-content>
                 <v-list-item-title @click="openScript">open base.py</v-list-item-title>
               </v-list-item-content>
@@ -120,8 +113,8 @@
                         <li>[[Light]]Lux</li>
                       </ul>
                       <ul>
-                        <li>[[ lists[0].name ]]</li>
-                        <li>[[ lists ]]</li>
+                        <li>[[ script_name ]]</li>
+
                       </ul>
                     </div>
                   </v-col>
@@ -164,7 +157,7 @@
         Servo: 0,
         script_name: 'base.py',
         sleep_time: 3,
-        lists: ["base1.py"]
+        lists: [{ "name": "base1.py", "time": "111" }]
       }),
 
       created() {
@@ -232,7 +225,7 @@
               console.log(response);
               list_len = response.data.length
               for (i = 0; i < list_len; i++) {
-                that.lists[i] = response.data[i].name
+                that.lists[i] = response.data[i]
               }
             })
             .catch(function (error) {
