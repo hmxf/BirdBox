@@ -2,11 +2,11 @@
 <html>
 
 <head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <link href="index/fonts.css" rel="stylesheet">
+  <link href="index/materialdesignicons.min.css" rel="stylesheet">
+  <link href="index/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="index/axios.min.js"></script>
 </head>
 
 <body>
@@ -15,19 +15,26 @@
       <v-app id="inspire">
         <v-navigation-drawer v-model="drawer" app clipped>
           <v-list dense>
-            <v-col class="d-flex" cols="12" sm="6">
-            <select v-model="script_name" >
-              <option v-for="list in lists">
-                [[ list.name ]]
-              </option>
-            </select>
-          </v-col>
             <v-list-item link>
+              <v-list-item-content>
+                <v-list-item-title> MENU</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <!-- <v-list-item link>
               <v-list-item-action>
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
+              <v-list-item-action>
+                <v-list-item-title>select</v-list-item-title>
+              </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title @click="open">open</v-list-item-title>
+                <v-col class="d-flex" cols="12" sm="6">
+                  <select v-model="script_name" label="Solo field" solo  class="white--text">
+                    <option v-for="list in lists" class="black--text">
+                      [[ list.name ]]
+                    </option>
+                  </select>
+                </v-col>
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
@@ -35,9 +42,9 @@
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title @click="openScript">open base.py</v-list-item-title>
+                <v-list-item-title @click="openScript">open [[script_name]]</v-list-item-title>
               </v-list-item-content>
-            </v-list-item>
+            </v-list-item> -->
             <v-list-item link>
               <v-list-item-action>
                 <v-icon>mdi-cog</v-icon>
@@ -56,7 +63,7 @@
             </v-list-item>
             <v-list-item link>
               <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
+                <v-icon>mdi-download</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title><a href="/state.csv" style="color: azure;text-decoration:none;">DownLoad box log</a>
@@ -65,13 +72,56 @@
             </v-list-item>
             <v-list-item link>
               <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
+                <v-icon>mdi-download</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title><a href="/log.csv" style="color: azure;text-decoration:none;">DownLoad bird log</a>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-row justify="center">
+              <v-dialog v-model="dialog" persistent max-width="600px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="primary"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Select A Script To Train
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Select A Script To Train</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="30" sm="15" md="10">
+                          <v-text-field label="Rewarding Time" hint="type a int num to set the rewarding time by second." required v-model="sleep_time"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                          <v-select
+                            :items="lists"
+                            item-text="name"
+                            label="Age*"
+                            required
+                            v-model="script_name"
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- <small>*indicates required field</small> -->
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="blue darken-1" text @click="openScript">Start</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-row>
           </v-list>
         </v-navigation-drawer>
 
@@ -86,42 +136,36 @@
               <v-col md='1'>
                 <div class="grid-content "></div>
               </v-col>
-              <v-col md='8' justify="center"><img src=http://192.168.0.6:8881/ width=90% justify="center"></v-col>
+              <v-col md='8' justify="center"><img src=http://192.168.0.6:8881/ width=100% justify="center"></v-col>
               <v-col>
                 <br><br>
-
-                <v-row>
-                  <v-col md='3'>
-                    <div class="grid-content "></div>
-                  </v-col>
-                  <v-col md="6">
-                    <div class="grid-content">
-                      <ul>
-                        <li>温度</li>
-                        <li>[[Tempreture]]℃</li>
-                      </ul>
-                      <ul>
-                        <li>湿度</li>
-                        <li>[[Humidity]]%</li>
-                      </ul>
-                      <ul>
-                        <li>气压</li>
-                        <li>[[Pressure]]kPa</li>
-                      </ul>
-                      <ul>
-                        <li>亮度</li>
-                        <li>[[Light]]Lux</li>
-                      </ul>
-                      <ul>
-                        <li>[[ script_name ]]</li>
-
-                      </ul>
-                    </div>
-                  </v-col>
-                  <v-col md='3'>
-                    <div class="grid-content "></div>
-                  </v-col>
-                </v-row>
+                  <v-card>
+                    <v-card-title class="subheading font-weight-bold">Current data</v-card-title>
+      
+                    <v-divider></v-divider>
+      
+                    <v-list dense>
+                      <v-list-item>
+                        <v-list-item-content>Tempreture:</v-list-item-content>
+                        <v-list-item-content class="align-end">[[Tempreture]]℃</v-list-item-content>
+                      </v-list-item>
+      
+                      <v-list-item>
+                        <v-list-item-content>Humidity:</v-list-item-content>
+                        <v-list-item-content class="align-end">[[Humidity]]%</v-list-item-content>
+                      </v-list-item>
+      
+                      <v-list-item>
+                        <v-list-item-content>Pressure:</v-list-item-content>
+                        <v-list-item-content class="align-end">[[Pressure]]kPa</v-list-item-content>
+                      </v-list-item>
+      
+                      <v-list-item>
+                        <v-list-item-content>Light:</v-list-item-content>
+                        <v-list-item-content class="align-end">[[Light]]Lux</v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
               </v-col>
             </v-row>
 
@@ -129,14 +173,14 @@
         </v-main>
 
         <v-footer app>
-          <span>&copy; 2020</span>
+          <span>&copy; 2020  LZU DSlab. All rights reserved.</span>
         </v-footer>
       </v-app>
     </v-app>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="index/vue.js"></script>
+  <script src="index/vuetify.js"></script>
   <script>
     new Vue({
       el: '#app',
@@ -157,7 +201,8 @@
         Servo: 0,
         script_name: 'base.py',
         sleep_time: 3,
-        lists: [{ "name": "base1.py", "time": "111" }]
+        lists: [{ "name": "base1.py", "time": "111" }],
+        dialog: false,
       }),
 
       created() {

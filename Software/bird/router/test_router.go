@@ -19,6 +19,7 @@ func main() {
 	config := readConfig()
 	r := gin.Default()
 	r.LoadHTMLFiles("views/index.html")
+	r.StaticFS("/index", http.Dir("./views"))
 	r.StaticFile("/log.csv", "../log/log.csv")
 	r.StaticFile("/state.csv", "../../box/box_log.csv")
 	r.GET("/ping", func(c *gin.Context) {
