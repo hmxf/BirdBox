@@ -7,6 +7,7 @@
   <link href="index/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <script src="index/axios.min.js"></script>
+  <title >Bird-Application</title>
 </head>
 
 <body>
@@ -20,31 +21,7 @@
                 <v-list-item-title> MENU</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <!-- <v-list-item link>
-              <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
-              </v-list-item-action>
-              <v-list-item-action>
-                <v-list-item-title>select</v-list-item-title>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-col class="d-flex" cols="12" sm="6">
-                  <select v-model="script_name" label="Solo field" solo  class="white--text">
-                    <option v-for="list in lists" class="black--text">
-                      [[ list.name ]]
-                    </option>
-                  </select>
-                </v-col>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link>
-              <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title @click="openScript">open [[script_name]]</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item> -->
+
             <v-list-item link>
               <v-list-item-action>
                 <v-icon>mdi-cog</v-icon>
@@ -117,7 +94,7 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-                    <v-btn color="blue darken-1" text @click="openScript">Start</v-btn>
+                    <v-btn color="blue darken-1" text @click="openScript();dialog=false;alert('ok')">Start</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -127,7 +104,7 @@
 
         <v-app-bar app clipped-left>
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>Application</v-toolbar-title>
+          <v-toolbar-title>Bird Application</v-toolbar-title>
         </v-app-bar>
 
         <v-main>
@@ -269,13 +246,19 @@
             .then(function (response) {
               console.log(response);
               list_len = response.data.length
-              for (i = 0; i < list_len; i++) {
-                that.lists[i] = response.data[i]
+              for (i = 0,j=0; i < list_len; i++) {
+                var str = response.data[i].name;
+                var dd = str.substr(-3,3);
+                if (dd == '.py'){
+                  that.lists[j] = response.data[i]
+                  j++
+                }
               }
             })
             .catch(function (error) {
               console.log(error);
             });
+            console.log(that.lists)
         },
         getMessage: function () {
           var that = this

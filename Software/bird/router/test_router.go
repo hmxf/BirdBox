@@ -89,6 +89,42 @@ func main() {
 		fmt.Printf("response:%x\n", &response.Body)
 		c.JSON(response.StatusCode, response.Body)
 	})
+	r.GET("/punish", func(c *gin.Context) {
+
+		client := &http.Client{}
+		// url := "http://192.168.0.155:8080/display"
+		url := "http://localhost:8081/punish"
+		fmt.Println(url)
+		request, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		defer response.Body.Close()
+		fmt.Printf("response:%x\n", &response.Body)
+		c.JSON(response.StatusCode, response.Body)
+	})
+	r.GET("/unpunish", func(c *gin.Context) {
+
+		client := &http.Client{}
+		// url := "http://192.168.0.155:8080/display"
+		url := "http://localhost:8081/unpunish"
+		fmt.Println(url)
+		request, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		defer response.Body.Close()
+		fmt.Printf("response:%x\n", &response.Body)
+		c.JSON(response.StatusCode, response.Body)
+	})
 	r.GET("/close", func(c *gin.Context) {
 
 		client := &http.Client{}

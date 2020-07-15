@@ -22,7 +22,7 @@ duty = int(command[2])
 types = command[3]
 if types == 'LED':
     fc = 5000
-    if duty>80 or duty<25:
+    if duty>80:
         print("LED error!")
         sys.exit()
 elif types =='FAN':

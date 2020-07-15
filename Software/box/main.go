@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	// "path/filepath"
 	"regexp"
 	"strconv"
 	"time"
@@ -34,6 +35,12 @@ func main() {
 	r.GET("/servo2", func(c *gin.Context) {
 		ChangeMode(scriptPwm, config.PinSERVO, "90", "SERVO")
 
+	})
+	r.GET("/punish", func(c *gin.Context) {
+		ChangeMode(scriptPwm, config.PinLED, "0", "LED")
+	})
+	r.GET("/unpunish", func(c *gin.Context) {
+		ChangeMode(scriptPwm, config.PinLED, "25", "LED")
 	})
 	r.GET("/config", func(c *gin.Context) {
 		readConfig()
@@ -221,6 +228,8 @@ type Config struct {
 
 func readConfig() Config {
 	var config Config
+	// dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	// fmt.Println(dir)
 	datas, err := os.Open("../config.json")
 	defer datas.Close()
 	if err != nil {
