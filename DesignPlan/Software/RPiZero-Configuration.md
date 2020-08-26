@@ -10,9 +10,6 @@
     hdmi_group=2
     hdmi_mode=87
     hdmi_cvt 1024 600 60 6 0 0 0
-
-    # Enable USB Ethernet Function
-    dtoverlay=dwc2
     ```
 
 - dtoverlay=vc4-fkms-V3D 的功能是启用 GPU 硬件渲染，注释掉会降低渲染性能且提高功耗。
@@ -26,19 +23,9 @@
 
 - 修改完毕后保存并退出。
 
-- 编辑 cmdline.txt 文件，找到 rootwait 并在后面插入内容使其成为如下所示的效果：
-
-    ```
-    ······ rootwait modules-load=dwc2,g_ether quiet ······
-    ```
-
-- 该文件所有内容均在一行，切记不要输入换行符。修改完毕后保存并退出。
-
 - 在根目录新建一个文件名为 ssh 而且无后缀名的文件。
 
 - 安全弹出内存卡。
-
-- 将 USB-A 转 MircoUSB 电缆的 MircoUSB 端连接到树莓派 ZeroWH 的 OTG 接口，另一端接入已经配置好并启动了的树莓派 4B 上。
 
 - 开机启动后在弹出的初始设置界面正常设置，询问是否联网时连接 WiFi，询问是否更新时选择跳过，询问是否重启时选择稍后。
 
@@ -72,7 +59,7 @@
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
     sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano
-    sudo apt install i2c-tools
+    sudo apt install i2c-tools sox
     ```
 
 - 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
@@ -80,6 +67,19 @@
     ```
     wget https://project-downloads.drogon.net/wiringpi-latest.deb && chmod +x wiringpi-latest.deb
     sudo dpkg -i wiringpi-latest.deb
+    ```
+
+- 将以下内容写入 crontab 文件中：
+
+    ```
+    */1 * * * * /home/pi/router/start.sh
+    ```
+
+- 在家目录下创建 .asoundrc 并将以下内容写入其中：
+
+    ```
+    defaults.ctl.card 2
+    defaults.pcm.card 2
     ```
 
 - 执行以下命令安装电阻屏触摸驱动：

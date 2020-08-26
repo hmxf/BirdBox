@@ -12,6 +12,9 @@
     hdmi_group=2 
     hdmi_mode=87 
     hdmi_cvt 1024 600 60 6 0 0 0
+
+    # DS3231 RTC Clock Config
+    dtoverlay=i2c-rtc,ds3231
     ```
 
 - dtoverlay=vc4-fkms-V3D 的功能是启用 GPU 硬件渲染，注释掉会降低渲染性能且提高功耗。
@@ -61,7 +64,7 @@
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
     sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano
-    sudo apt install i2c-tools rpi-eeprom-images
+    sudo apt install i2c-tools rpi-eeprom-images motion matchbox-keyboard
     ```
 
 - 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
@@ -69,12 +72,6 @@
     ```
     wget https://project-downloads.drogon.net/wiringpi-latest.deb && chmod +x wiringpi-latest.deb
     sudo dpkg -i wiringpi-latest.deb
-    ```
-
-- 将以下代码粘贴到 /boot/config.txt 中并保存：
-
-    ```
-    dtoverlay=i2c-rtc,ds3231
     ```
 
 - 编辑 /lib/udev/hwclock-set 文件，注释掉以下内容（通常位于文件最开始的几行）：
@@ -102,17 +99,38 @@
     i2cdetect -y 1
     ```
 
+- 将以下内容写入 /etc/default/motion 文件中：
+
+    ```
+    start_motion_daemon=yes
+    ```
+
+- 将 /home/pi/box/motion.conf 复制到 /etc/motion 文件夹下：
+
+    ```
+    sudo cp /home/pi/box/motion.conf /etc/motion
+    ```
+
 - 将以下内容写入 /etc/rc.local 文件中（新加内容务必添加到 exit 0 之前）：
 
     ```
     pigpiod
-    
-    python3 /home/pi/PWM_Control/pwm_control.py 23 100 FAN
-    python3 /home/pi/PWM_Control/pwm_control.py 25 100 FAN
-    python3 /home/pi/PWM_Control/pwm_control.py 12  25 LED
-    python3 /home/pi/PWM_Control/pwm_control.py 20   0 SERVO
 
     hwclock -s
+    motion
+    /home/pi/box/start.sh
+    ```
+
+- 将以下内容写入 crontab 文件中：
+
+    ```
+    */1 * * * * /home/pi/box/test.sh
+    ```
+
+- 将以下内容写入 root 用户的 crontab 文件中：
+
+    ```
+    0 10 * * 1 sudo find /var/lib/motion -mtime +10 -name "*.*" -exec rm -Rf {} \;
     ```
 
 - 安装配置完成后重启系统
