@@ -111,25 +111,17 @@
     sudo cp /home/pi/box/motion.conf /etc/motion
     ```
 
-- 将以下内容写入 /etc/rc.local 文件中（新加内容务必添加到 exit 0 之前）：
-
-    ```
-    pigpiod
-
-    hwclock -s
-    motion
-    /home/pi/box/start.sh
-    ```
-
 - 将以下内容写入 crontab 文件中：
 
     ```
-    */1 * * * * /home/pi/box/test.sh
+    @reboot /home/pi/box/start.sh>>/home/pi/.tempdata
+    */1 * * * * /home/pi/box/daemon.sh
     ```
 
 - 将以下内容写入 root 用户的 crontab 文件中：
 
     ```
+    @reboot /usr/bin/pigpiod && /usr/bin/motion && hwclock -s
     0 10 * * 1 sudo find /var/lib/motion -mtime +10 -name "*.*" -exec rm -Rf {} \;
     ```
 
