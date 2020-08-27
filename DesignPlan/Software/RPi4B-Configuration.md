@@ -64,7 +64,7 @@
     ```
     sudo apt update && sudo apt upgrade && sudo apt autoremove
     sudo apt update && sudo apt install tree htop git screen tmux net-tools curl wget nano
-    sudo apt install i2c-tools rpi-eeprom-images motion matchbox-keyboard
+    sudo apt install i2c-tools rpi-eeprom-images motion matchbox-keyboard sshpass
     ```
 
 - 执行以下命令手动更新 wiringPi 到最新版，否则无法支持树莓派 4B：
