@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 INI_PIN             = 4
 
 ADDR                = (0x29)
-
+# ADDR                = (0x48)
 COMMAND_BIT         = (0xA0)
 #Register (0x00)
 ENABLE_REGISTER     = (0x00)

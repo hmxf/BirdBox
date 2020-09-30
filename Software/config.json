@@ -1,0 +1,11 @@
+{
+    "pin_LED": "12",
+    "pin_FAN1" : "23",
+    "pin_FAN2" :"25",
+    "pin_SERVO" : "20",
+    "pi_4b_address":"http://192.168.0.6",
+    "pi_4b_box_port":":8081",
+    "pi_4b_router_port":":8080",
+    "pi_zero_address":"http://192.168.0.155",
+    "pi_zero_port":":8080"
+}

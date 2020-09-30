@@ -1,0 +1,22 @@
+sudo apt install motion
+sudo nano /etc/default/motion
+    start_motion_daemon=yes
+
+sudo nano /etc/motion/motion.conf
+    11 daemon on
+    79 width 1024
+    82 height 600
+    86 framerate 60
+    215 minimum_motion_frames 70
+    285 ffmpeg_video_codec mp4
+    445 stream_port 8881
+    458 stream_maxrate 70
+    461 stream_localhost off
+
+sudo timedatectl set-timezone 'Asia/Shanghai'
+
+# 开启
+sudo motion 
+#关闭 这里使用service stop的效果不理想，故强制杀进程
+sudo killall -TERM motion
+

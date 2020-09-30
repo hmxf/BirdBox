@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <title>Motion 4.1.1</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        basePath = 'http://192.168.0.6:8080'       
+    </script>
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+    </style>
+</head>
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"> -->
+
+<body>
+
+
+    <div id="app">
+
+        <br><br><br><br><br>
+
+        <el-row :gutter="20" type="flex" class="row-bg" justify="center">
+            <el-col :span="3">
+                <el-col :span="24">
+                    <div class="grid-content bg-purple-white"></div>
+                </el-col>
+            </el-col>
+            <el-col :span="15">
+                <el-row>
+                    <el-col :span="2">
+                        <div class="grid-content "></div>
+                    </el-col>
+                    <el-col :span="20">
+                        <div class="grid-content "><img src=http://192.168.0.6:8881/ width=100% justify="center"></div>
+                    </el-col>
+                    <el-col :span="2">
+                        <div class="grid-content "></div>
+                    </el-col>
+                </el-row>
+
+            </el-col>
+            <el-col :span="6">
+                <br><br><br><br>
+                <el-row>
+                    <el-col :span='6'><div class="grid-content "></div></el-col>
+                    <el-col :span="12">
+                        <div class="grid-content ">
+                            <el-button type="primary" @click="open">open</el-button>&nbsp;&nbsp;&nbsp;
+                            <el-button type="primary" @click="close">close</el-button>
+                            <!-- <el-button type="primary" @click="getMessage">message</el-button> -->
+                            <br><br><br>
+                            <el-button type="primary"><a href="/log.csv"
+                                    style="color: azure;text-decoration:none;">DownLoad bird log</a><i
+                                    class="el-icon-upload el-icon--right"></i></el-button>
+                            <br><br>
+                            <el-button type="primary"><a href="/state.csv"
+                                    style="color: azure;text-decoration:none;">DownLoad box log</a><i
+                                    class="el-icon-upload el-icon--right"></i></el-button>
+                        </div>
+                    </el-col>
+                    <el-col :span='6'><div class="grid-content "></div></el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span='6'><div class="grid-content "></div></el-col>
+                    <el-col :span="12">
+                        <div class="grid-content">
+                            <ul>
+                                <li>温度</li>
+                                <li>[[Tempreture]]℃</li>
+                            </ul>
+                            <ul>
+                                <li>湿度</li>
+                                <li>[[Humidity]]%</li>
+                            </ul>
+                            <ul>
+                                <li>气压</li>
+                                <li>[[Pressure]]kPa</li>
+                            </ul>
+                            <ul>
+                                <li>亮度</li>
+                                <li>[[Light]]Lux</li>
+                            </ul>
+                        </div>
+                    </el-col>
+                    <el-col :span='6'><div class="grid-content "></div></el-col>
+                </el-row>
+            </el-col>
+
+        </el-row>
+
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            delimiters: ['[[', ']]'],
+            data: {
+                message: 'Hello Vue!',
+                basePath: '192.168.0.6:8080',
+                Tempreture: 0,
+                Pressure: 0,
+                Humidity: 0,
+                Light: 0,
+                Servo: 0
+            },
+            mounted() {
+                this.timer()
+            },
+            created() {
+                this.getMessage()
+            },
+            destoryed() {
+                clearInterval(this.timer)
+            },
+            methods: {
+                open: function () {
+                    axios.get('/display')
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                close: function () {
+                    axios.get('/close')
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                getMessage: function () {
+                    var that = this
+                    axios.get('/message').then(function (response) {
+                        console.log(response.data.Tempreture)
+                        //取一位小数或取整
+                        that.Tempreture = parseInt((response.data.Tempreture) * 10) / 10
+                        that.Light = response.data.Light
+                        that.Pressure = parseInt((response.data.Pressure) * 10) / 10
+                        that.Servo = response.data.Servo
+                        that.Humidity = parseInt(response.data.Humidity)
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                download: function (url) {
+                    axios.get(url)
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                timer() {
+                    return setInterval(() => {
+                        this.getMessage()
+                    }, 5000)
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>
